@@ -1,0 +1,61 @@
+app:
+  title: "AI Fake News Detector"
+  version: "1.0.0"
+  theme: "dark"
+
+paths:
+  data_dir: "data"
+  models_dir: "models"
+  sample_data: "data/sample/sample_news.csv"
+
+preprocessing:
+  max_text_length: 10000
+  min_text_length: 20
+  language: "english"
+
+features:
+  tfidf_word:
+    max_features: 15000
+    ngram_range: [1, 2]
+    min_df: 2
+    max_df: 0.95
+    sublinear_tf: true
+  tfidf_char:
+    max_features: 10000
+    ngram_range: [2, 4]
+    analyzer: "char_wb"
+    min_df: 3
+    max_df: 0.95
+    sublinear_tf: true
+
+models:
+  logistic_regression:
+    C: 1.0
+    max_iter: 1000
+    class_weight: "balanced"
+    solver: "lbfgs"
+  svc:
+    C: 1.0
+    max_iter: 2000
+    class_weight: "balanced"
+  random_forest:
+    n_estimators: 200
+    max_depth: 20
+    min_samples_split: 5
+    class_weight: "balanced"
+    n_jobs: -1
+  ensemble:
+    weights:
+      logistic_regression: 0.4
+      svc: 0.35
+      random_forest: 0.25
+
+thresholds:
+  fake_confident: 0.65
+  real_confident: 0.35
+  uncertain_low: 0.40
+  uncertain_high: 0.60
+
+explainability:
+  top_n_words: 15
+  highlight_top_n: 10
